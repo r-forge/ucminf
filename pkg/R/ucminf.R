@@ -1,5 +1,5 @@
 ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
-  con <- list(trace=0, grtol=1e-12, xtol=1e-6, stepmax=100, maxit=500,
+  con <- list(trace=0, grtol=1e-6, xtol=1e-12, stepmax=100, maxit=500,
               grad='forward',gradstep=c(1e-6,1e-8), hessian.init = NULL,
               method.args = NULL)
   con[(namc <- names(control))] <- control
@@ -58,13 +58,14 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
     if(hessian == 1) 
       ans$hessian <- hessian(fn, ans$par, method="Richardson",
                              method.args=con$method.args, ...)
-    if(hessian == 2) {
-      LT=W[(4*n+1):(4*n+n*(n+1)/2)]
+    if(hessian == 2 | hessian == 3) {
       COV <- matrix(0,n,n)
-      COV[logicMat] <- LT
+      COV[logicMat] <- W[(4*n+1):(4*n+n*(n+1)/2)]
       COV <- t(COV)+COV-diag(diag(COV))
-      ans$hessian <- solve(COV)
+      ans$invhessian <- COV
     }
+    if(hessian == 3)
+      ans$hessian <- solve(COV)
     ans$info = c( maxgradient = W[2],
                   laststep    = W[3],
                   stepmax     =get(".stepmax", envir = rho),

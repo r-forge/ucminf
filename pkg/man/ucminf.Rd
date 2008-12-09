@@ -10,7 +10,7 @@
 }
 
 \usage{
-ucminf (par, fn, gr = NULL, \dots, control = list(), hessian=0)
+ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
 }
 
 
@@ -38,8 +38,10 @@ ucminf (par, fn, gr = NULL, \dots, control = list(), hessian=0)
       \item{0}{ No hessian approximation is returned.}
       \item{1}{Returns a numerical approximation of the Hessian
 	using \sQuote{hessian} in the package \sQuote{numDeriv}. }
-      \item{2}{Returns final approximation of the Hessian based on the series of BFGS
-	updates during optimization. Requires no extra computations.}
+      \item{2}{Returns final approximation of the inverse Hessian based on the series of BFGS
+	updates during optimization. }
+      \item{3}{Returns final approximation of the Hessian based on the series of BFGS
+	updates during optimization. }
       }
 
   }
@@ -67,13 +69,13 @@ ucminf (par, fn, gr = NULL, \dots, control = list(), hessian=0)
       The algorithm stops when
       \eqn{||F'(x)||_\infty \leq }{||F'(x)||_inf <=} grtol, that
       is when the largest element of the gradient is less than
-      grtol. Default value is grtol = 1e-12. }
+      grtol. Default value is grtol = 1e-6. }
     \item{xtol}{
       The algorithm stops when \eqn{||x-x_p||_2 \leq
 	\textrm{xtol}\cdot(\textrm{xtol} + 
       ||x||_2)}{||x-x_p||_2 <=
 	xtol*(xtol + ||x||_2)}, that is when the last step is
-      sufficiently small. Default value is xtol = 1e-6.}
+      sufficiently small. Default value is xtol = 1e-12.}
     \item{stepmax}{
       Initial maximal allowed step length (radius of
       trust-region). The value is updated during the
@@ -166,16 +168,35 @@ ucminf (par, fn, gr = NULL, \dots, control = list(), hessian=0)
 fR = function(x) { (1-x[1])^2+100*(x[2]-x[1]^2)^2 }
 gR = function(x) { c( -400*x[1]*(x[2]-x[1]*x[1]) - 2*(1-x[1]),
                        200*(x[2]-x[1]*x[1])) }
+#  Find minimum
+ucminf(par = c(2,.5), fn = fR, gr=gR)
+
+#  Compare hessian approximations
+ucminf(par = c(2,.5), fn = fR, gr=gR, hessian=1)$hessian
+ucminf(par = c(2,.5), fn = fR, gr=gR, hessian=3)$hessian
+
+#  Compare run times with optim's BFGS method
+#  (chosen convergence criteria result in similar accuracy)
+system.time( for(i in 1:500)
+               ucminf(par = c(2,0.5), fn = fR, gr=gR)
+           )
+system.time( for(i in 1:500)
+               optim(par = c(2,0.5), fn = fR, gr=gR,method='BFGS')
+           )
+
+
 ## Quadratic function
 fQ = function(x) { sum((4*x-1)^2) }
 gQ = function(x) { 32*x -8}
 
-ucminf(par = c(5,15), fn = fR, gr=gR)
-
-ucminf(par = c(20.5,20.0), fn = fQ, gr = gQ,
+#  Find minimum with too small stepmax and print trace
+ucminf(par = c(20.5,20.0), fn = fQ, gr = gQ, 
        control=list(stepmax=1,trace=TRUE))
-}
 
+#  The same again with a larger stepmax
+ucminf(par = c(20.5,20.0), fn = fQ, gr = gQ,
+       control=list(stepmax=100,trace=TRUE))
+}
 
 \keyword{optimize}
 
