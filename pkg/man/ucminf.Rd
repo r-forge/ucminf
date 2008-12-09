@@ -33,7 +33,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     A list of control parameters. See \sQuote{Details}.
   }
   \item{hessian}{
-    Integer 0, 1 or 2.
+    Integer value:
     \describe{
       \item{0}{ No hessian approximation is returned.}
       \item{1}{Returns a numerical approximation of the Hessian
@@ -120,7 +120,8 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     }
   }
   \item{message}{String with reason of termination.}
-  \item{hessian}{Estimated Hessian at computed minimizer.}
+  \item{hessian}{Estimate of Hessian at computed minimizer.}
+  \item{invhessian}{Estimate of inverse Hessian at computed minimizer.}
   \item{info}{Information about the search:
     \describe{
       \item{maxgradient}{\eqn{\max(||F'(x)||_\infty)}{max(||F'(x)||_inf)}, the

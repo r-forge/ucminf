@@ -68,7 +68,7 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
       ans$hessian <- solve(COV)
     ans$info = c( maxgradient = W[2],
                   laststep    = W[3],
-                  stepmax     =get(".stepmax", envir = rho),
+                  stepmax     = get(".stepmax", envir = rho),
                   neval       = get(".maxfun", envir = rho)
                 )
   }
@@ -76,7 +76,4 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   if (!is.null(nm)) 
     names(ans$par) <- nm
   ans
-}		
-
-
-
+}
