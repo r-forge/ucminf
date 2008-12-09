@@ -1,0 +1,11 @@
+Package: ucminf
+Version: 1.0
+Date: 2008-12-09
+Title: UCMINF - Unconstrained Nonlinear Optimization
+Author: Stig Bousgaard Mortensen and Hans Bruun Nielsen
+Maintainer: Stig Bousgaard Mortensen <sbm@imm.dtu.dk>
+Description: The algorithm is of quasi-Newton type with BFGS updating of the inverse Hessian and soft line search with a trust region type monitoring of the input to the line search algorithm.
+Depends: numDeriv, R (>= 1.9.0)
+License: GPL version 2 or newer
+
+
