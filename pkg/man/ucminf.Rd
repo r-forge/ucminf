@@ -43,7 +43,6 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
       \item{3}{Returns final approximation of the Hessian based on the series of BFGS
 	updates during optimization. }
       }
-
   }
 }
 
@@ -57,7 +56,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
   The algorithm can be given an initial estimate of the Hessian for the
   optimization and it is possible to get the final approximation of the
   Hessian based on the series of BFGS updates. This extra functionality
-  may be useful for optimization of a series of related problems.
+  may be useful for optimization in a series of related problems.
   
   The 'control' argument is a list that can supply any of the
   following components:
@@ -68,7 +67,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     \item{grtol}{
       The algorithm stops when
       \eqn{||F'(x)||_\infty \leq }{||F'(x)||_inf <=} grtol, that
-      is when the largest element of the gradient is less than
+      is when the largest absolute value of the gradient is less than
       grtol. Default value is grtol = 1e-6. }
     \item{xtol}{
       The algorithm stops when \eqn{||x-x_p||_2 \leq
@@ -92,8 +91,8 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
       difference approximation for the gradient. Step length is
       \eqn{|x_i|\cdot\textrm{gradstep[1]+gradstep[2]}}{|x_i|*gradstep[1]+gradstep[2]}.
       The default value is gradstep = c( 1e-6, 1e-8 ).  } 
-    \item{hessian.init}{
-      Initial Hessian. If not given it is initialized
+    \item{invhessian}{
+      Initial inverse of Hessian. If not given it is initialized
       as the identity matrix. }
     \item{method.args}{
       Used when \sQuote{hessian = 2}. Arguments for
@@ -120,11 +119,11 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     }
   }
   \item{message}{String with reason of termination.}
+  \item{invhessian}{Estimate of inverse Hessian at computed.}
   \item{hessian}{Estimate of Hessian at computed minimizer.}
-  \item{invhessian}{Estimate of inverse Hessian at computed minimizer.}
   \item{info}{Information about the search:
     \describe{
-      \item{maxgradient}{\eqn{\max(||F'(x)||_\infty)}{max(||F'(x)||_inf)}, the
+      \item{maxgradient}{\eqn{||F'(x)||_\infty}{||F'(x)||_inf}, the
 	largest element in the absolute 
 	value of the gradient at the computed minimizer.}
       \item{laststep}{Length of last step.}
@@ -138,7 +137,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
 
   \sQuote{UCMINF} algorithm design and Fortran code by Hans Bruun Nielsen.
 
-  Implementation in \R by Stig B. Mortensen.
+  Implementation in \R by Stig B. Mortensen, \email{sbm@imm.dtu.dk}.
     
 }
 

@@ -1,6 +1,6 @@
 ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   con <- list(trace=0, grtol=1e-6, xtol=1e-12, stepmax=100, maxit=500,
-              grad='forward',gradstep=c(1e-6,1e-8), hessian.init = NULL,
+              grad='forward',gradstep=c(1e-6,1e-8), invhessian = NULL,
               method.args = NULL)
   con[(namc <- names(control))] <- control
   stopifnot(length(con$gradstep)==2)
@@ -9,18 +9,15 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   rho = new.env(parent = environment())
   n <- length(par)
   eps <- c(con$grtol,con$xtol)
-  if(!is.null(gr)) { grad <- 0 } else {
-    grad <- ifelse(con$grad=='forward',1,2) #else central
-  }
+  if(!is.null(gr)) { grad <- 0 } 
+  else { grad <- ifelse(con$grad=='forward',1,2) } #else central
   iw <- n*ceiling(max(n+1,(n+11)/2)) + 10
   w <- rep(0,iw)
   trace <- con$trace>0
-  icontr = 1+trace+2*!is.null(con$hessian.init)
+  icontr = 1+trace+2*!is.null(con$invhessian)
   logicMat <- (matrix(-(1:n^2),n,n,byrow=TRUE)+matrix(1:n^2,n,n))<=0
-  if(!is.null(con$hessian.init)){
-    inv.hessian.init <- solve(con$hessian.init)
-    w[(4*n+1):(4*n+n*(n+1)/2)] <-  inv.hessian.init[logicMat]
-  }
+  if(!is.null(con$invhessian))
+    w[(4*n+1):(4*n+n*(n+1)/2)] <-  con$invhessian[logicMat]
   assign(".n",      as.integer(n)           , envir = rho) 
   assign(".x",      as.double(rep(0,n))     , envir = rho)
   assign(".par",    as.double(par)          , envir = rho)
