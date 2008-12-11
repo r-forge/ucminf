@@ -18,9 +18,12 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   logicMat <- (matrix(-(1:n^2),n,n,byrow=TRUE)+matrix(1:n^2,n,n))<=0
   if(!is.null(con$invhessian))
     w[(4*n+1):(4*n+n*(n+1)/2)] <-  con$invhessian[logicMat]
+  par0 <- vector(length=n)
+  for(i in 1:n) #avoid that par from calling env. is overwritten
+    par0[i] = par[i]
   assign(".n",      as.integer(n)           , envir = rho) 
   assign(".x",      as.double(rep(0,n))     , envir = rho)
-  assign(".par",    as.double(par)          , envir = rho)
+  assign(".par",    as.double(par0)         , envir = rho)
   assign(".stepmax",as.double(con$stepmax)  , envir = rho)
   assign(".eps",    as.double(eps)          , envir = rho)
   assign(".maxfun", as.integer(con$maxit)   , envir = rho)
