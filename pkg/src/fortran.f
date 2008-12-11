@@ -214,6 +214,13 @@ C       ... Set return values
         W(1) = FX
         W(2) = NMG
         W(3) = NMH
+        IF(ICONTR.EQ.1.OR.ICONTR.EQ.2) THEN
+           WRITE(OUT,'(A)') 'Optimization has converged.'
+        ELSE
+           WRITE(OUT,'(A27,I3,A22)') 'Optimization stopped after '
+     +          ,NEVAL,' function evaluations.'
+        ENDIF
+        CALL DBLEPR (OUT, -1, X, 0)
         RETURN
 ***************************  End of  UCMINF  ***************************
       END

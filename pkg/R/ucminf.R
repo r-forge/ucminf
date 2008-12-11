@@ -1,5 +1,5 @@
 ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
-  con <- list(trace=0, grtol=1e-6, xtol=1e-12, stepmax=100, maxit=500,
+  con <- list(trace=0, grtol=1e-6, xtol=1e-12, stepmax=100, maxeval=500,
               grad='forward',gradstep=c(1e-6,1e-8), invhessian = NULL,
               method.args = NULL)
   con[(namc <- names(control))] <- control
@@ -26,7 +26,7 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   assign(".par",    as.double(par0)         , envir = rho)
   assign(".stepmax",as.double(con$stepmax)  , envir = rho)
   assign(".eps",    as.double(eps)          , envir = rho)
-  assign(".maxfun", as.integer(con$maxit)   , envir = rho)
+  assign(".maxfun", as.integer(con$maxeval)   , envir = rho)
   assign(".w",      as.double(w)            , envir = rho)
   assign(".iw",     as.integer(iw)          , envir = rho)
   assign(".icontr", as.integer(icontr)      , envir = rho)
@@ -44,12 +44,12 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
     message = switch(as.character(icontr),
       '1' ='Stopped by small gradient (grtol).',
       '2' ='Stopped by small step (xtol).',
-      '3' ='Stopped by iteration limit (maxit)',
+      '3' ='Stopped by function evaluation limit (maxeval)',
       '4' ='Stopped by zero step from line search',
       '-2'="Computation did not start: length(par) = 0.",
       '-4'="Computation did not start: stepmax is too small.",
       '-5'="Computation did not start: grtol or xtol <= 0.",
-      '-6'="Computation did not start: maxit <= 0.",
+      '-6'="Computation did not start: maxeval <= 0.",
       '-7'="Computation did not start: given hessian not pos. definite.",
       '-8'="Computation did not start: iw too small."
       )

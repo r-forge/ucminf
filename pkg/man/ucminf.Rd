@@ -79,9 +79,10 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
       Initial maximal allowed step length (radius of
       trust-region). The value is updated during the
       optimization. Default value is stepmax = 100.}
-    \item{maxit}{
-      The maximum number of iterations. Default value is
-      maxit = 500. }
+    \item{maxeval}{
+      The maximum number of function evaluations. A function evaluation
+      is counted as one evaluation of the objective function and of the
+      gradient function. Default value is maxeval = 500.  } 
     \item{grad}{
       Either \sQuote{forward} or \sQuote{central}. Controls
       the type of finite difference approximation to be used for the
@@ -108,12 +109,12 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     \describe{
       \item{1}{Stopped by small gradient (grtol).}
       \item{2}{Stopped by small step (xtol).}
-      \item{3}{Stopped by iteration limit (maxit).}
+      \item{3}{Stopped by function evaluation limit (maxeval).}
       \item{4}{Stopped by zero step from line search}
       \item{-2}{Computation did not start: length(par) = 0.}
       \item{-4}{Computation did not start: stepmax is too small.}
       \item{-5}{Computation did not start: grtol or xtol <= 0.}
-      \item{-6}{Computation did not start: maxit <= 0.}
+      \item{-6}{Computation did not start: maxeval <= 0.}
       \item{-7}{Computation did not start: given Hessian not pos. definite.}
       \item{-8}{Computation did not start: iw too small.}
     }
