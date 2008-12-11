@@ -86,7 +86,8 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     \item{grad}{
       Either \sQuote{forward} or \sQuote{central}. Controls
       the type of finite difference approximation to be used for the
-      gradient if no gradient function is given in the input \sQuote{gr}.}
+      gradient if no gradient function is given in the input argument
+      \sQuote{gr}. Default value is grad = 'forward'.}
     \item{gradstep}{
       Vector of length 2. The step length in finite
       difference approximation for the gradient. Step length is
