@@ -14,8 +14,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
 }
 
 
-\arguments{
-     
+\arguments{    
   \item{par}{
     Initial estimate of minimum for \sQuote{fn}.
   }
@@ -35,13 +34,12 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
   \item{hessian}{
     Integer value:
     \describe{
-      \item{0}{ No hessian approximation is returned.}
+      \item{0}{No hessian approximation is returned.}
       \item{1}{Returns a numerical approximation of the Hessian
 	using \sQuote{hessian} in the package \sQuote{numDeriv}. }
       \item{2}{Returns final approximation of the inverse Hessian based on the series of BFGS
 	updates during optimization. }
-      \item{3}{Returns final approximation of the Hessian based on the series of BFGS
-	updates during optimization. }
+      \item{3}{Same at 2, but will also return the Hessian (the inverse of 2). }
       }
   }
 }
@@ -78,7 +76,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     \item{stepmax}{
       Initial maximal allowed step length (radius of
       trust-region). The value is updated during the
-      optimization. Default value is stepmax = 100.}
+      optimization. Default value is stepmax = 1.}
     \item{maxeval}{
       The maximum number of function evaluations. A function evaluation
       is counted as one evaluation of the objective function and of the
@@ -93,11 +91,12 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
       difference approximation for the gradient. Step length is
       \eqn{|x_i|\cdot\textrm{gradstep[1]+gradstep[2]}}{|x_i|*gradstep[1]+gradstep[2]}.
       The default value is gradstep = c( 1e-6, 1e-8 ).  } 
-    \item{invhessian}{
-      Initial inverse of Hessian. If not given it is initialized
+    \item{invhessian.lt}{
+      A vector with an initial approximation to the lower triangle of the
+      inverse Hessian. If not given, the inverse Hessian is initialized
       as the identity matrix. }
     \item{method.args}{
-      Used when \sQuote{hessian = 2}. Arguments for
+      Used when \sQuote{hessian = 1}. Arguments for
       hessian approximation using the \sQuote{numDeriv} package, see
       \code{\link[numDeriv]{hessian}} for more details.}
   }
@@ -121,8 +120,10 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
     }
   }
   \item{message}{String with reason of termination.}
-  \item{invhessian}{Estimate of inverse Hessian at computed.}
-  \item{hessian}{Estimate of Hessian at computed minimizer.}
+  \item{hessian, invhessian}{Estimate of (inv.) Hessian at computed minimizer. The type of
+    estimate is given by the input argument \sQuote{hessian}.}
+  \item{invhessian.lt}{The lower triangle of the final approximation to the
+    inverse Hessian based on the series of BFGS	updates during optimization.}
   \item{info}{Information about the search:
     \describe{
       \item{maxgradient}{\eqn{||F'(x)||_\infty}{||F'(x)||_inf}, the

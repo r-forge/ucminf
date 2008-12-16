@@ -1,9 +1,10 @@
 ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
-  con <- list(trace=0, grtol=1e-6, xtol=1e-12, stepmax=100, maxeval=500,
-              grad='forward',gradstep=c(1e-6,1e-8), invhessian = NULL,
+  con <- list(trace=0, grtol=1e-6, xtol=1e-12, stepmax=1, maxeval=500,
+              grad='forward',gradstep=c(1e-6,1e-8), invhessian.lt = NULL, 
               method.args = NULL)
+  stopifnot(names(control) %in% names(con))
   con[(namc <- names(control))] <- control
-  stopifnot(length(con$gradstep)==2)
+  stopifnot(length(con$gradstep)==2,con$grad %in% c('forward','central'))
   fnstr <- quote(fn(.x, ...))	
   grstr <- quote(gr(.x, ...))	
   rho = new.env(parent = environment())
@@ -14,11 +15,10 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   iw <- n*ceiling(max(n+1,(n+11)/2)) + 10
   w <- rep(0,iw)
   trace <- con$trace>0
-  icontr = 1+trace+2*!is.null(con$invhessian)
-  logicMat <- (matrix(-(1:n^2),n,n,byrow=TRUE)+matrix(1:n^2,n,n))<=0
-  if(!is.null(con$invhessian))
-    w[(4*n+1):(4*n+n*(n+1)/2)] <-  con$invhessian[logicMat]
-  par0 <- vector(length=n)
+  icontr = 1+trace+2*!is.null(con$invhessian.lt)
+  if(!is.null(con$invhessian.lt))
+    w[(4*n+1):(4*n+n*(n+1)/2)] <-  con$invhessian.lt #con$invhessian[logicMat]
+  par0 <- rep(0,n)
   for(i in 1:n) #avoid that par from calling env. is overwritten
     par0[i] = par[i]
   assign(".n",      as.integer(n)           , envir = rho) 
@@ -26,7 +26,7 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
   assign(".par",    as.double(par0)         , envir = rho)
   assign(".stepmax",as.double(con$stepmax)  , envir = rho)
   assign(".eps",    as.double(eps)          , envir = rho)
-  assign(".maxfun", as.integer(con$maxeval)   , envir = rho)
+  assign(".maxfun", as.integer(con$maxeval) , envir = rho)
   assign(".w",      as.double(w)            , envir = rho)
   assign(".iw",     as.integer(iw)          , envir = rho)
   assign(".icontr", as.integer(icontr)      , envir = rho)
@@ -59,6 +59,7 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
       ans$hessian <- hessian(fn, ans$par, method="Richardson",
                              method.args=con$method.args, ...)
     if(hessian == 2 | hessian == 3) {
+      logicMat <- (matrix(-(1:n^2),n,n,byrow=TRUE)+matrix(1:n^2,n,n))<=0
       COV <- matrix(0,n,n)
       COV[logicMat] <- W[(4*n+1):(4*n+n*(n+1)/2)]
       COV <- t(COV)+COV-diag(diag(COV))
@@ -66,6 +67,7 @@ ucminf = function(par, fn, gr = NULL, ..., control = list(), hessian=0) {
     }
     if(hessian == 3)
       ans$hessian <- solve(COV)
+    ans$invhessian.lt <- W[(4*n+1):(4*n+n*(n+1)/2)]
     ans$info = c( maxgradient = W[2],
                   laststep    = W[3],
                   stepmax     = get(".stepmax", envir = rho),
