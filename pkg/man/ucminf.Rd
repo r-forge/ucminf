@@ -61,7 +61,7 @@ ucminf(par, fn, gr = NULL, \dots, control = list(), hessian=0)
   
   \describe{
     \item{trace}{
-      If trace is positive then tracing information is printed.}
+      If trace is positive then tracing information is printed for each iteration.}
     \item{grtol}{
       The algorithm stops when
       \eqn{||F'(x)||_\infty \leq }{||F'(x)||_inf <=} grtol, that
