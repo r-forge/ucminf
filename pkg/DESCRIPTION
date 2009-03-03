@@ -1,6 +1,6 @@
 Package: ucminf
-Version: 1.0-3
-Date: 2009-02-24
+Version: 1.0-4
+Date: 2009-03-02
 Title: General-purpose unconstrained non-linear optimization
 Author: Hans Bruun Nielsen and Stig Bousgaard Mortensen
 Maintainer: Stig Bousgaard Mortensen <sbm@imm.dtu.dk>
